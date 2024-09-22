@@ -68,6 +68,9 @@ fake = Faker(locale="ru_RU")
     ],
 )
 def test_create_pet_valid_data(pet_data: PetBody):
+    """
+    Test is checking that method POST /pet with inputed valid data creates new pet in DB
+    """
     response = api.create_pet(pet_data.model_dump(exclude_none=True))
     assert response.status_code == 200
 
@@ -85,6 +88,9 @@ def test_create_pet_valid_data(pet_data: PetBody):
 @pytest.mark.usefixtures("create_pet")
 @pytest.mark.parametrize("pet_id", [random.randrange(100, 1_000_000_000)])
 def test_delete_pet(pet_id):
+    """
+    Test is checking that method DELETE /pet/{petId} deletes pet by id
+    """
     response = api.delete_pet(pet_id)
     assert response.status_code == 200
 
@@ -95,6 +101,9 @@ def test_delete_pet(pet_id):
 
 @pytest.mark.parametrize("status", ["available", "pending", "sold"])
 def test_get_pet_by_status(status: str):
+    """
+    Test is checking that method GET  /pet/findByStatus get info about all pets with required status
+    """
     status_arg = f"?status={status}"
     response = api.get_pet_by_status(status_arg)
     assert response.status_code == 200
@@ -142,7 +151,10 @@ def test_get_pet_by_status(status: str):
     ],
 )
 @pytest.mark.parametrize("pet_id", [random.randrange(100, 1_000_000_000)])
-def test_update_pet(values: PetBody, create_pet: PetBody, pet_id: int):
+def test_update_pet(values: PetBody, pet_id: int):
+    """
+    Test is checking that method PUT  /pet updates pet info
+    """
     update_body = values.model_dump(exclude_none=True)
     update_body.update({"id": pet_id})
 
